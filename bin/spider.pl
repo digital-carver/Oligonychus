@@ -3,13 +3,17 @@ use strict;
 use warnings;
 
 BEGIN {
-	if ( -e $ENV{OLIGONYCHUS_HOME} && -d $ENV{OLIGONYCHUS_HOME} ) {
-		unshift(@INC, "$ENV{OLIGONYCHUS_HOME}/lib/");
-		unshift(@INC, "$ENV{OLIGONYCHUS_HOME}/conf/");
-	} else {
-		print "Error(1): Environment variable OLIGONYCHUS_HOME incorrect/not set.\n";
-	}
-};
+    unless (@ARGV == 1) {
+        die "Usage: spider.pl <Oligonychus_installation_directory>.\n";
+    }
+    my $home = shift @ARGV;
+    unless (-e $home && -d $home) {
+        die "The argument $home does not exists or is not a directory.\n";
+    }
+    unshift @INC, "$home/lib"; 
+    unshift @INC, "$home/conf"; 
+    $ENV{OLIGONYCHUS_HOME} = $home;
+}
 
 use TvgagaConf qw($config $bot_conf);
 use AzriSpider;
